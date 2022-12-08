@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model accounts {
+  id             Int      @id @default(autoincrement())
+  createAt       DateTime @default(now())
+  naira_bal      Float    @default(0) @db.Float
+  usd_bal        Float    @default(0) @db.Float
+  user_id        Int      @unique
+  account_number String?  @db.VarChar(300)
+  bank           String?  @db.VarChar(300)
+  acctRef        String?  @db.VarChar(300)
+  visibile       Int      @default(1)
+  updateAt       DateTime @default(now()) @updatedAt @db.DateTime(0)
+}
+
+model transfers {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  amount     Float    @db.Float
+  to_account String   @db.VarChar(50)
+  to_bank    String   @db.VarChar(50)
+  to_name    String   @db.VarChar(50)
+  bal_after  Float    @db.Float
+  createAt   DateTime @db.DateTime(0)
+  updateAt   DateTime @db.DateTime(0)
+}
+
+model acces_tokens {
+  id       Int      @id @default(autoincrement())
+  user_id  Int
+  token    String   @unique @db.VarChar(300)
+  status   String   @db.VarChar(11)
+  createAt DateTime @db.DateTime(0)
+  updateAt DateTime @db.DateTime(0)
+  visible  Int      @default(1)
+}
+
+model bills {
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  bill_id        Int
+  bill_type      String   @db.VarChar(50)
+  amount         Float    @db.Float
+  description    String   @db.VarChar(300)
+  createAt       DateTime @db.DateTime(0)
+  updateAt       DateTime @db.DateTime(0)
+  status         String   @db.VarChar(50)
+  access_details String   @db.LongText
+  visible        Int      @default(1)
+}
+
+model users {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  name           String?
+  password       String   @db.VarChar(300)
+  ccode          String   @db.VarChar(20)
+  fingerprint    String?
+  phone_number   String  @unique
+  pin            Int
+  createAt       DateTime @default(now())
+  updateAt       DateTime @updatedAt
+  visibility     Int      @default(1)
+  wallet_balance Float    @default(0)
+}
+
+model transactions {
+  id       Int      @id @default(autoincrement())
+  trans_id String   @db.Text
+  user_id  Int
+  type     String   @db.VarChar(50)
+  amount   Float    @db.Float
+  status   String   @db.VarChar(50)
+  updateAt DateTime @db.DateTime(0)
+  createAt DateTime @default(now()) @db.DateTime(0)
+  visible  Int      @default(1)
+}
